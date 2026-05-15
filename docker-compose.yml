@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  phishguard:
+    build: .
+    image: phishguard:latest
+    container_name: phishguard
+    ports:
+      - "8000:8000"
+    environment:
+      - VT_API_KEY=${VT_API_KEY:-}
+    volumes:
+      - ./data:/app/data          # persists SQLite DB + trained model
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
